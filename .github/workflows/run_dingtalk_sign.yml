@@ -1,0 +1,39 @@
+name: Run DingTalk Sign Generator
+
+on:
+  push:
+    branches:
+      - main  # 触发条件：当代码推送到 main 分支时触发
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  run-java-code:
+    runs-on: ubuntu-latest  # 使用最新的 Ubuntu 环境
+
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 设置 JDK 环境
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # 根据您的项目需求选择 JDK 版本
+          distribution: 'temurin'
+
+      # 安装 Apache Commons Codec 依赖
+      - name: Install Apache Commons Codec
+        run: |
+          mkdir -p lib
+          wget https://repo1.maven.org/maven2/commons-codec/commons-codec/1.15/commons-codec-1.15.jar -O lib/commons-codec-1.15.jar
+
+      # 编译 Java 文件
+      - name: Compile Java code
+        run: |
+          javac -cp lib/commons-codec-1.15.jar DingTalkSignGenerator.java
+
+      # 运行 Java 程序
+      - name: Run Java program
+        run: |
+          java -cp .:lib/commons-codec-1.15.jar DingTalkSignGenerator
