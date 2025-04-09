@@ -1,0 +1,30 @@
+name: Run DingTalk Bot
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # 每天早上9点触发
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 设置 JDK 环境
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 编译 Java 文件
+      - name: Compile Java code
+        run: javac DingTalkBot.java
+
+      # 运行 Java 程序
+      - name: Run Java program
+        run: java DingTalkBot
